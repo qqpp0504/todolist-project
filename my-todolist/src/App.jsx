@@ -12,6 +12,8 @@ function App() {
   const [input, setInput] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [editInput, setEditInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterTasks, setFilterTasks] = useState([]);
 
   function getSavedTasks() {
     const savedTasks = localStorage.getItem("tasks");
@@ -25,6 +27,7 @@ function App() {
   function handleAddTask(e) {
     e.preventDefault();
     setTasks((prev) => [...prev, { todo: input, completed: false }]);
+    setInput("");
   }
 
   function handleEditingTask(index) {
@@ -53,6 +56,17 @@ function App() {
     setTasks(tasks.filter((_, i) => i !== index));
   }
 
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      const filterTasks = tasks.filter((task) =>
+        task.todo.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilterTasks(filterTasks);
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [tasks, searchQuery]);
+
   return (
     <div className="mt-10 w-[25rem] mx-auto">
       <h1 className="text-3xl font-bold">TODO LIST</h1>
@@ -74,9 +88,19 @@ function App() {
         </button>
       </form>
 
+      <div>
+        <input
+          type="text"
+          placeholder="查詢待辦事項"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="border w-full mt-5 rounded-3xl px-4 py-2 outline-none border-neutral-400"
+        />
+      </div>
+
       <div className="mt-8 w-full">
         <ul className="flex flex-col gap-5">
-          {tasks.map((task, index) => (
+          {filterTasks.map((task, index) => (
             <li key={index} className="flex justify-between items-center gap-5">
               <div className="flex items-center gap-3">
                 <button
@@ -123,6 +147,12 @@ function App() {
               </div>
             </li>
           ))}
+          {tasks.length === 0 && (
+            <p className="text-neutral-500">您尚未新增待辦事項</p>
+          )}
+          {filterTasks.length === 0 && searchQuery && (
+            <p className="text-neutral-500">Oops! 未查詢到此事項</p>
+          )}
         </ul>
       </div>
     </div>
