@@ -65,6 +65,7 @@ function App() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          placeholder="請輸入待辦事項"
           className="rounded-3xl px-4 py-2 w-full bg-neutral-400 text-white outline-none"
         />
 
