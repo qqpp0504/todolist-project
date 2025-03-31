@@ -68,7 +68,7 @@ function App() {
   }, [tasks, searchQuery]);
 
   return (
-    <div className="mt-10 w-[25rem] mx-auto">
+    <div className="mt-10 w-full sm:w-[25rem] mx-auto">
       <h1 className="text-3xl font-bold">TODO LIST</h1>
 
       <form
